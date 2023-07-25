@@ -26,6 +26,63 @@ const itemSchema= new mongoose.Schema({
 
 const Item=mongoose.model('Item',itemSchema)
 
+app.get('/api/items',async(req,res)=>{
+    try{
+        const items=await Item.find();
+        res.json(items);
+    }catch(error){
+        console.error(error)
+        res.status(500).json({message: 'Server Error'})
+    }
+})
+
+app.get('/api/items/:id',async(req,res)=>{
+    try{
+        const itemId=req.params.id;
+        const item=await Item.findById(itemId);
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found' });
+          }
+        res.json(item);
+    }catch(error){
+        console.error(error)
+        res.status(500).json({message: 'Server Error'})
+    }
+})
+
+app.post('/api/items',async(req,res)=>{
+    try{
+        const newItem= new Item(req.body);
+        await newItem.save();
+        res.json(newItem);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({message: 'Server Error'});
+    }
+})
+
+app.put('/api/items/:id',async(req,res)=>{
+    try{
+        const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        });
+        res.json(updatedItem);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({message: 'Server Error'});
+    }
+})
+
+app.delete('/api/items/:id', async (req, res) => {
+    try {
+      const deletedItem = await Item.findByIdAndDelete(req.params.id);
+      res.json(deletedItem);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  });
+
 app.listen(PORT,()=>{
     console.log('Server is running ')
 })
