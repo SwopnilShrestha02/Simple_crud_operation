@@ -1,15 +1,18 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app=express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
-const MONGODB_URI='mongodb+srv://swopnil:Shrestha%4002@cluster0.dfzl3d6.mongodb.net/Crud';
+const MONGODB_URI=process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI,{
     useNewUrlParser: true,
   useUnifiedTopology: true,
